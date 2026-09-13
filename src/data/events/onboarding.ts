@@ -24,7 +24,9 @@ export const onboardingEvents: GameEvent[] = [
           scheduleEvent: { eventId: 'officer_track', inYears: 0 },
         },
         hidden: { hiddenStats: { stress: 8 } },
-        custom: (state) => ({ character: { ...state.character, age: state.character.age + 3 } }),
+        custom: (state) => ({
+          character: { ...state.character, age: state.character.age + (state.character.gender === 'female' ? 2 : 3) },
+        }),
       },
       {
         id: 'studies',
@@ -86,6 +88,18 @@ export const onboardingEvents: GameEvent[] = [
         text: 'להישאר בתפקיד הנוכחי עד השחרור',
         outcome: 'ויתרת על הקידום ופשוט ספרת ימים עד השחרור, עם החברים שכבר הכרת.',
         effects: { stats: { happiness: 5, friends: 5 }, xp: 15 },
+      },
+      {
+        id: 'career',
+        text: 'לחתום קבע ולהפוך את זה לקריירה',
+        outcome:
+          'החלטת שהצבא הוא לא רק שלב אלא מסלול חיים - חתמת קבע. עוד כמה שנים טובות בצבא, הפעם עם משכורת ודרגה שמתקדמת.',
+        effects: {
+          stats: { skills: 15, reputation: 15, career: 10, money: 10, energy: -10 },
+          xp: 45,
+          flags: { armyCareer: true },
+        },
+        custom: (state) => ({ character: { ...state.character, age: state.character.age + 3 } }),
       },
     ],
   },

@@ -36,6 +36,11 @@ const PLAYER_FORMS: Record<string, Pair> = {
   'חדש/ה': { masc: 'חדש', fem: 'חדשה' },
   'מבין/ה': { masc: 'מבין', fem: 'מבינה' },
   'מוכן/ה': { masc: 'מוכן', fem: 'מוכנה' },
+
+  // Not grammar - a fact that differs by gender (regular IDF conscription is
+  // 3 years for men, 2 for women). Text is written for the male/default
+  // duration; this swaps in the shorter one for female players.
+  'שלוש שנים': { masc: 'שלוש שנים', fem: 'שנתיים' },
 }
 
 // Third-person forms - only substituted for events where the referent is
