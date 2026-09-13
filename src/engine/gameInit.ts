@@ -8,7 +8,7 @@ export function createInitialState(character: Character): GameState {
 
   return {
     character,
-    education: { path: 'none', status: 'inProgress', degreeLevel: 0 },
+    education: { path: 'none', status: 'notStarted', degreeLevel: 0 },
     career: UNEMPLOYED_CAREER,
     relationship: { status: 'single', partner: null, relationshipScore: 0, history: [] },
     family: { children: [], wantsChildren: null },

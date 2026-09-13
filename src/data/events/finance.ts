@@ -69,7 +69,7 @@ export const financeEvents: GameEvent[] = [
         id: 'fix',
         text: 'לתקן את הרכב',
         outcome: 'שילמת למוסך סכום לא קטן, אבל הרכב חזר לדרכים ואת/ה חוסך/ת את הכאב ראש של לחפש חלופה.',
-        effects: { stats: { money: -5, energy: 3 }, money: -4500, xp: 10 },
+        effects: { stats: { money: -4, energy: 3 }, money: -2800, xp: 10 },
       },
       {
         id: 'public_transport',

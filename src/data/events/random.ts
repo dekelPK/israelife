@@ -105,7 +105,7 @@ export const randomEvents: GameEvent[] = [
         id: 'lend',
         text: 'להלוות לו/ה כסף',
         outcome: 'העברת את הכסף בלי היסוס גדול. מקווה שהוא/היא יחזיר/תחזיר, אבל בעיקר שמח/ה שיכולת לעזור.',
-        effects: { stats: { friends: 10, money: -3 }, money: -5000, xp: 20 },
+        effects: { stats: { friends: 10, money: -2 }, money: -2500, xp: 20 },
         hidden: { hiddenStats: { luck: -3 } },
       },
       {

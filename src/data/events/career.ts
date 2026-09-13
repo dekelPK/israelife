@@ -237,6 +237,36 @@ export const careerEvents: GameEvent[] = [
       },
     ],
   },
+  {
+    id: 'career_switch',
+    category: 'career',
+    icon: '🔄',
+    title: 'לשנות כיוון מקצועי?',
+    condition: (state) => !state.career.unemployed && state.career.yearsInRole >= 3,
+    weight: 0.5,
+    getText: () => 'את/ה מרגיש/ה שהגיע הזמן לנסות משהו אחר לגמרי במקצוע. אף פעם לא מאוחר מדי להתחיל מחדש.',
+    choices: (state) => {
+      const others = CAREER_TRACKS.filter((t) => t.id !== state.career.trackId)
+      const offset = state.year % others.length
+      const picks = [others[offset], others[(offset + 1) % others.length], others[(offset + 2) % others.length]]
+      const options: Choice[] = picks
+        .filter((t, i, arr) => arr.findIndex((x) => x.id === t.id) === i)
+        .map((track) => ({
+          id: `switch_${track.id}`,
+          text: `${track.icon} לעבור לתחום ${track.label}`,
+          outcome: `עזבת הכל והתחלת מהתחלה בתחום ${track.label}. מפחיד, אבל גם מרענן להיות שוב ג׳וניור.`,
+          effects: { stats: { career: -5, happiness: 5, energy: -8 }, xp: 25 },
+          custom: (s) => ({ career: startJob(s, track.id, 1) }),
+        }))
+      options.push({
+        id: 'stay',
+        text: 'להישאר במקום הנוכחי',
+        outcome: 'המחשבה חלפה, אבל החלטת שהיציבה שיש לך כרגע שווה יותר מההרפתקה.',
+        effects: { stats: { happiness: 1 }, xp: 10 },
+      })
+      return options
+    },
+  },
 ]
 
 export { salaryFor }

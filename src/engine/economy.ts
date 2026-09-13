@@ -16,16 +16,23 @@ export interface YearlyFinanceResult {
 // gameplay stat: this moves the real ₪ balance (finance.savings) used for
 // the end-game life summary, and only nudges the money stat to reflect
 // whether the character's economic reality is improving or crumbling.
+//
+// Deliberately forgiving: this represents an average year, not a worst
+// case, so a modest or entry-level salary should be able to break even in
+// most cities rather than spiral into debt on its own.
 export function computeYearlyFinance(state: GameState): YearlyFinanceResult {
   const mult = cityMultiplier(state.character.city)
   const traits = state.character.traits
-  let baseMonthly = 3200 * mult
-  baseMonthly += state.family.children.filter((c) => c.stage !== 'adult').length * 1100 * mult
+  let baseMonthly = 2600 * mult
+  baseMonthly += state.family.children.filter((c) => c.stage !== 'adult').length * 650 * mult
   if (state.finance.ownsHome) baseMonthly += state.finance.mortgage
-  else baseMonthly += 1900 * mult * (0.6 + state.stats.housing / 200)
+  else baseMonthly += 1400 * mult * (0.6 + state.stats.housing / 200)
 
   if (traits.includes('frugal')) baseMonthly *= 0.85
   if (traits.includes('spender')) baseMonthly *= 1.2
+  // Belt-tightening while between jobs - unemployment isn't modeled with
+  // formal benefits, but nobody keeps spending like they're still earning.
+  if (state.career.unemployed) baseMonthly *= 0.65
 
   const annualIncome = state.career.salary * 12
   const annualExpenses = baseMonthly * 12
@@ -35,11 +42,12 @@ export function computeYearlyFinance(state: GameState): YearlyFinanceResult {
   const nextSavings = state.finance.savings + netAnnual
 
   let moneyStatDelta = 0
-  if (netAnnual > 30000) moneyStatDelta = 3
-  else if (netAnnual > 0) moneyStatDelta = 1
-  else if (netAnnual > -20000) moneyStatDelta = -2
-  else moneyStatDelta = -4
-  if (nextSavings < 0) moneyStatDelta -= 2
+  if (netAnnual > 20000) moneyStatDelta = 3
+  else if (netAnnual > -5000) moneyStatDelta = 1
+  else if (netAnnual > -25000) moneyStatDelta = -1
+  else if (netAnnual > -50000) moneyStatDelta = -2
+  else moneyStatDelta = -3
+  if (nextSavings < -80000) moneyStatDelta -= 1
 
   return { savings: nextSavings, monthlyExpenses: Math.round(baseMonthly), moneyStatDelta, netAnnual }
 }

@@ -95,7 +95,13 @@ export const onboardingEvents: GameEvent[] = [
     icon: '🎓',
     title: 'איזה מסלול לימודים?',
     once: true,
-    getText: () => 'איפה תרצה/י ללמוד?',
+    maxAge: 45,
+    weight: 0.6,
+    condition: (state) => state.education.status !== 'inProgress',
+    getText: (state) =>
+      state.flags.servedArmy
+        ? 'אחרי הצבא, את/ה מרגיש/ה שזה הזמן ללמוד משהו. איפה תרצה/י ללמוד?'
+        : 'עולה בך הרצון ללמוד משהו חדש ברצינות. איפה תרצה/י ללמוד?',
     choices: EDUCATION_PATHS.filter((p) => p.id !== 'none').map(
       (path): Choice => ({
         id: path.id,
@@ -174,7 +180,10 @@ export const onboardingEvents: GameEvent[] = [
     icon: '🎓',
     title: 'סיום לימודים',
     condition: (state) => state.education.status === 'inProgress',
-    getText: (state) => `הגיע הרגע — סיימת את לימודי ה${state.education.field ?? ''}.`,
+    getText: (state) => {
+      const fieldLabel = EDUCATION_FIELDS.find((f) => f.id === state.education.field)?.label ?? ''
+      return `הגיע הרגע — סיימת את לימודי ה${fieldLabel}.`
+    },
     choices: [
       {
         id: 'excel',

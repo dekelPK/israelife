@@ -93,7 +93,7 @@ export interface Character {
 export interface EducationRecord {
   path: 'university' | 'college' | 'vocational' | 'courses' | 'none'
   field?: string
-  status: 'inProgress' | 'graduated' | 'droppedOut' | 'failed'
+  status: 'notStarted' | 'inProgress' | 'graduated' | 'droppedOut' | 'failed'
   degreeLevel: number // 0 = none, 1 = BA/tech diploma, 2 = MA, 3 = PhD
 }
 
