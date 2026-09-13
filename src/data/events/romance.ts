@@ -8,7 +8,9 @@ export const romanceEvents: GameEvent[] = [
     icon: '💘',
     title: 'הכרות חדשה',
     condition: (state) => state.relationship.status === 'single',
-    weight: (state) => (state.character.traits.includes('social') ? 2 : 1),
+    // High weight: starting a relationship gates a large share of later
+    // content (family, marriage), so it shouldn't get lost in a big pool.
+    weight: (state) => (state.character.traits.includes('social') ? 4 : 2.5),
     getText: (state) => {
       const app = ['בטינדר', 'דרך חברים משותפים', 'באירוע עבודה', 'בבר השכונתי'][
         Math.floor(state.year % 4)
@@ -19,6 +21,7 @@ export const romanceEvents: GameEvent[] = [
       {
         id: 'date',
         text: 'לצאת לדייט',
+        outcome: 'הדייט עבר טוב מהציפיות. יש כאן משהו ששווה להמשיך לבדוק.',
         effects: { stats: { happiness: 5, relationship: 5 }, xp: 15 },
         custom: (state, rng) => {
           const partner = generatePartner(state, rng)
@@ -35,6 +38,7 @@ export const romanceEvents: GameEvent[] = [
       {
         id: 'skip',
         text: 'לא כרגע, יש הרבה על הראש',
+        outcome: 'החלטת שזה לא הזמן הנכון. אולי בפעם הבאה.',
         effects: { stats: { happiness: -1 }, xp: 5 },
       },
     ],
@@ -51,22 +55,26 @@ export const romanceEvents: GameEvent[] = [
       {
         id: 'talk',
         text: 'לדבר איתו/ה עכשיו',
-        effects: { stats: { relationship: 6, energy: -5 }, xp: 15 },
+        outcome: 'התאמצת ופנית זמן לשיחה. זה בדיוק מה שהיה צריך — הקשר ביניכם התחזק.',
+        effects: { stats: { relationship: 6, energy: -5 }, relationshipScore: 8, xp: 15 },
       },
       {
         id: 'no_energy',
         text: 'להגיד שאין לך כוח כרגע',
-        effects: { stats: { energy: 3, relationship: -4 }, xp: 5 },
+        outcome: 'ביקשת רגע לנשום. הוא/היא הבינ/ה, אבל אפשר לחוש קצת ריחוק בערב הזה.',
+        effects: { stats: { energy: 3, relationship: -4 }, relationshipScore: -6, xp: 5 },
       },
       {
         id: 'leave',
         text: 'לצאת מהבית להתאוורר',
-        effects: { stats: { happiness: 2, relationship: -6, energy: 2 }, xp: 5 },
+        outcome: 'יצאת להליכה לבד. ההליכה עשתה לך טוב, אבל בבית נשארה תחושת אכזבה.',
+        effects: { stats: { happiness: 2, relationship: -6, energy: 2 }, relationshipScore: -10, xp: 5 },
       },
       {
         id: 'tomorrow',
         text: 'להציע לדבר מחר ברוגע',
-        effects: { stats: { relationship: 1, energy: 1 }, xp: 10 },
+        outcome: 'קבעתם לדבר בשקט מחר. לא פתרון מושלם, אבל דחייה קטנה ואחראית.',
+        effects: { stats: { relationship: 1, energy: 1 }, relationshipScore: 2, xp: 10 },
       },
     ],
   },
@@ -76,19 +84,21 @@ export const romanceEvents: GameEvent[] = [
     icon: '🏡',
     title: 'לעבור לגור ביחד?',
     once: true,
-    condition: (state) => state.relationship.status === 'dating' && state.relationship.relationshipScore >= 65,
+    weight: 2.5,
+    condition: (state) => state.relationship.status === 'dating' && state.relationship.relationshipScore >= 60,
     getText: (state) => `הזוגיות עם ${state.relationship.partner?.name} מתקדמת יפה. אולי הזמן לעבור לגור ביחד?`,
     choices: [
       {
         id: 'move_in',
         text: 'לעבור לגור ביחד',
-        effects: { stats: { relationship: 10, happiness: 6, housing: 3, money: -3 }, xp: 30 },
-        custom: (state) => ({ relationship: { ...state.relationship, relationshipScore: Math.min(100, state.relationship.relationshipScore + 10) } }),
+        outcome: 'עברתם לגור ביחד. יש התרגלות — למי ממלא את המדיח, למי בוחר את הסדרה — אבל בסך הכול זה מרגיש נכון.',
+        effects: { stats: { relationship: 10, happiness: 6, housing: 3, money: -3 }, relationshipScore: 8, xp: 30 },
       },
       {
         id: 'not_yet',
         text: 'עוד קצת מוקדם',
-        effects: { stats: { relationship: -2 }, xp: 10 },
+        outcome: 'החלטתם לחכות עוד קצת. אין למה למהר.',
+        effects: { stats: { relationship: -2 }, relationshipScore: -3, xp: 10 },
       },
     ],
   },
@@ -98,14 +108,17 @@ export const romanceEvents: GameEvent[] = [
     icon: '💍',
     title: 'הצעת נישואין',
     once: true,
-    condition: (state) => state.relationship.status === 'dating' && state.relationship.relationshipScore >= 80,
+    weight: 2.5,
+    condition: (state) => state.relationship.status === 'dating' && state.relationship.relationshipScore >= 75,
     getText: (state) => `אתה/את בטוח/ה ש${state.relationship.partner?.name} הוא/היא בן/בת הזוג לחיים. זה הרגע להציע נישואין.`,
     choices: [
       {
         id: 'propose',
         text: 'להציע נישואין',
+        outcome: 'כרעת ברך והוצאת טבעת. בן/בת הזוג שלך בכה/תה מהתרגשות ואמר/ה כן. יש חתונה בדרך.',
         effects: {
           stats: { relationship: 15, happiness: 15, family: 5, money: -6 },
+          relationshipScore: 10,
           xp: 60,
           flags: { married: true },
         },
@@ -114,7 +127,8 @@ export const romanceEvents: GameEvent[] = [
       {
         id: 'wait',
         text: 'לא בטוח/ה שזה הזמן',
-        effects: { stats: { relationship: -8, happiness: -3 }, xp: 10 },
+        outcome: 'הרגע חמק. אולי בהמשך, אבל כרגע העדפת לא להתחייב.',
+        effects: { stats: { relationship: -8, happiness: -3 }, relationshipScore: -10, xp: 10 },
       },
     ],
   },
@@ -130,11 +144,13 @@ export const romanceEvents: GameEvent[] = [
       {
         id: 'work_on_it',
         text: 'להשקיע ולנסות לתקן',
-        effects: { stats: { relationship: 15, energy: -10 }, xp: 25 },
+        outcome: 'ישבתם לדבר בכנות, בלי לוותר בקלות. זה היה קשה, אבל הקשר יצא מזה חזק יותר.',
+        effects: { stats: { relationship: 15, energy: -10 }, relationshipScore: 22, xp: 25 },
       },
       {
         id: 'breakup',
         text: 'להיפרד',
+        outcome: 'החלטתם להיפרד. כואב, אבל גם משחרר — זה פשוט כבר לא היה מתאים.',
         effects: { stats: { happiness: -10, relationship: -100 }, xp: 20, scheduleEvent: { eventId: 'ex_texts_after_years', inYears: 3 } },
         custom: (state) => ({
           relationship: {
@@ -163,13 +179,38 @@ export const romanceEvents: GameEvent[] = [
       {
         id: 'reply',
         text: 'לענות ולפתוח שיחה',
+        outcome: 'ענית, ולרגע קצר חזרתם לימים ההם. השיחה נגמרה בחיוך קטן ובלי שום דבר מעבר לזה.',
         effects: { stats: { happiness: 3 }, xp: 15 },
         hidden: { hiddenStats: { stress: 3 } },
       },
       {
         id: 'ignore',
         text: 'להתעלם ולהמשיך הלאה',
+        outcome: 'בחרת לא לענות. העבר נשאר בעבר, וזה בסדר גמור.',
         effects: { stats: { happiness: 1 }, xp: 10 },
+      },
+    ],
+  },
+  {
+    id: 'meet_the_parents',
+    category: 'romance',
+    icon: '🍲',
+    title: 'ארוחה עם ההורים שלו/ה',
+    once: true,
+    condition: (state) => state.relationship.status === 'dating' && state.relationship.relationshipScore >= 55,
+    getText: (state) => `${state.relationship.partner?.name} מזמין/ה אותך לארוחת שישי ראשונה עם המשפחה שלו/ה.`,
+    choices: [
+      {
+        id: 'charm',
+        text: 'להתאמץ ולעשות רושם טוב',
+        outcome: 'הבאת עוגה, שאלת שאלות מנומסות והצלחת לגרום לאמא שלו/ה לחייך. עברת בהצלחה.',
+        effects: { stats: { relationship: 6, happiness: 3 }, relationshipScore: 6, xp: 15 },
+      },
+      {
+        id: 'awkward',
+        text: 'להיות עצמך, גם אם זה קצת מביך',
+        outcome: 'הערב היה קצת מביך, אבל היית אמיתי/ת. בן/בת הזוג שלך דווקא אהב/ה את זה.',
+        effects: { stats: { relationship: 3, happiness: 4 }, relationshipScore: 3, xp: 10 },
       },
     ],
   },

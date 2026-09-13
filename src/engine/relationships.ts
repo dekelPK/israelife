@@ -32,8 +32,11 @@ export function generatePartner(state: GameState, rng: Rng): PartnerNPC {
 
 export function relationshipHealthDrift(state: GameState, rng: Rng): number {
   if (!state.relationship.partner) return 0
-  const base = (state.relationship.partner.compatibility - 50) / 20
+  // Compatibility is the dominant signal so a good match reliably climbs
+  // toward marriage over a few years and a bad one reliably decays - noise
+  // adds texture without drowning out the player's original choice of partner.
+  const base = (state.relationship.partner.compatibility - 50) / 8
   const energyPenalty = state.stats.energy < 30 ? -2 : 0
-  const noise = randomInt(-3, 3, rng)
+  const noise = randomInt(-2, 2, rng)
   return Math.round(base + energyPenalty + noise)
 }

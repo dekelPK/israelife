@@ -33,9 +33,12 @@ export function LifeSummary() {
         {summary.bigDecision && (
           <div className="bg-gradient-to-l from-amber-500/15 to-transparent border border-amber-500/30 rounded-2xl p-6">
             <h2 className="font-bold text-amber-300 mb-1">ההחלטה ששינתה את חייך</h2>
-            <p className="text-slate-200">
+            <p className="text-slate-200 font-semibold">
               בגיל {summary.bigDecision.age}: {summary.bigDecision.label}
             </p>
+            {summary.bigDecision.outcome && (
+              <p className="text-slate-300 mt-1">{summary.bigDecision.outcome}</p>
+            )}
           </div>
         )}
 

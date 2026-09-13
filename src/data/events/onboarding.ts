@@ -16,6 +16,7 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'army',
         text: '🎖️ להתגייס לצבא',
+        outcome: 'שלוש שנים של אימונים, חברויות שיישארו לכל החיים, ולפעמים גם רגעים מפחידים. יצאת עם כישורים ותעודת שחרור ביד.',
         effects: {
           stats: { skills: 10, reputation: 8, friends: 5, energy: -10 },
           xp: 30,
@@ -28,6 +29,7 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'studies',
         text: '🎓 ללכת ללמוד',
+        outcome: 'החלטת להשקיע קודם בהשכלה. עוד מעט תצטרך לבחור מסלול ותחום.',
         effects: {
           xp: 15,
           flags: { choseStudiesFirst: true },
@@ -37,6 +39,7 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'work',
         text: '💼 לצאת ישר לעבודה',
+        outcome: 'ויתרת על עוד כמה שנים בספסל הלימודים ויצאת ישר לשוק העבודה. פחות תארים, יותר ניסיון.',
         effects: {
           stats: { career: 5, money: 5 },
           xp: 15,
@@ -57,6 +60,7 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'command',
         text: 'לצאת לקורס קצינים',
+        outcome: 'קורס הקצינים היה מפרך, אבל יצאת ממנו עם דרגות על הכתף וביטחון עצמי שלא היה לך קודם.',
         effects: {
           stats: { skills: 12, reputation: 12, energy: -15 },
           xp: 35,
@@ -67,6 +71,7 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'technical',
         text: 'לעבור ליחידה טכנולוגית',
+        outcome: 'למדת מקצוע אמיתי בין המחשבים, ניסיון שכבר עכשיו נראה שווה יותר מכל קורס אזרחי.',
         effects: {
           stats: { skills: 15, education: 5 },
           xp: 25,
@@ -76,6 +81,7 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'regular',
         text: 'להישאר בתפקיד הנוכחי עד השחרור',
+        outcome: 'ויתרת על הקידום ופשוט ספרת ימים עד השחרור, עם החברים שכבר הכרת.',
         effects: { stats: { happiness: 5, friends: 5 }, xp: 15 },
       },
     ],
@@ -91,6 +97,7 @@ export const onboardingEvents: GameEvent[] = [
       (path): Choice => ({
         id: path.id,
         text: `${path.label} — ${path.description}`,
+        outcome: `נרשמת ל${path.label}. עכשיו צריך לבחור תחום.`,
         effects: {
           money: -path.yearlyCost,
           flags: { studyPath: path.id },
@@ -110,6 +117,7 @@ export const onboardingEvents: GameEvent[] = [
       (field): Choice => ({
         id: field.id,
         text: field.label,
+        outcome: `בחרת להתמקד ב${field.label}. השנים הקרובות יעברו בין הרצאות, מטלות ותרגילי בית.`,
         effects: {
           stats: { education: 10 },
           xp: 20,
@@ -145,11 +153,13 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'study',
         text: 'להישאר וללמוד',
+        outcome: 'ויתרת על הבילוי והישארת מול הספרים. מרגיש/ה משעמם, אבל בטוח/ה יותר לקראת המבחן.',
         effects: { stats: { education: 8, energy: -5 }, xp: 15 },
       },
       {
         id: 'party',
         text: 'לצאת לבלות',
+        outcome: 'המסיבה הייתה בלתי נשכחת. רק בבוקר, עם הראש הכבד, תזכיר/י לעצמך שיש מבחן השבוע.',
         effects: { stats: { happiness: 10, friends: 8, energy: -10 }, xp: 10 },
         hidden: { stats: { education: -5 } },
       },
@@ -166,18 +176,21 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'excel',
         text: 'הצלחת לסיים בהצטיינות',
+        outcome: 'הריצה האחרונה השתלמה — סיימת עם תעודה מהודרת ותחושה שכל הלילות ההם היו שווים את זה.',
         effects: { stats: { education: 20, skills: 10, reputation: 8 }, xp: 60 },
         custom: (state) => ({ education: { ...state.education, status: 'graduated', degreeLevel: 1 } }),
       },
       {
         id: 'pass',
         text: 'סיימת בול בזמן, לא יותר לא פחות',
+        outcome: 'לא הצטיינות, אבל תעודה ביד וחוויה שלמה. עכשיו אפשר סוף סוף לצאת לעבוד.',
         effects: { stats: { education: 12 }, xp: 40 },
         custom: (state) => ({ education: { ...state.education, status: 'graduated', degreeLevel: 1 } }),
       },
       {
         id: 'dropout',
         text: 'להיות כנה/ה עם עצמך — זה לא בשבילך, לפרוש עכשיו',
+        outcome: 'זה לא היה קל להודות בזה, אבל הרגשת הקלה ברגע שהחלטת לפרוש ולחפש כיוון אחר.',
         effects: { stats: { education: -5, happiness: 5 }, xp: 10 },
         custom: (state) => ({ education: { ...state.education, status: 'droppedOut' } }),
       },

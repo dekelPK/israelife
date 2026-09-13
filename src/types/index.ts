@@ -154,6 +154,7 @@ export interface ScoreLogEntry {
   year: number
   age: number
   label: string
+  outcome?: string
   visibleEffects: StatDelta[]
   hiddenEffects: StatDelta[]
   xpGain: number
@@ -175,6 +176,10 @@ export interface EffectPayload {
   hiddenStats?: Partial<Record<HiddenStatKey, number>>
   xp?: number
   money?: number // direct cash delta, separate from the "money" stat scale
+  // Nudges the internal courtship gate (relationship.relationshipScore) that
+  // decides eligibility for move-in/marriage/crisis events - distinct from
+  // the visible "relationship" stat, so a choice can carry both.
+  relationshipScore?: number
   flags?: Record<string, boolean | number | string>
   scheduleEvent?: { eventId: string; inYears: number }
 }
@@ -182,6 +187,9 @@ export interface EffectPayload {
 export interface Choice {
   id: string
   text: string
+  // One or two sentences of what actually happened - shown in the result
+  // panel so a decision reads as a story beat, not just a row of stat chips.
+  outcome: string
   effects: EffectPayload
   // Effects that are not surfaced in the immediate result popup - they still
   // land on the state, and their existence is only revealed in the life

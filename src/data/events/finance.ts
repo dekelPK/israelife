@@ -13,6 +13,7 @@ export const financeEvents: GameEvent[] = [
       {
         id: 'move',
         text: 'לעבור לדירה היקרה',
+        outcome: 'עברת לדירה החדשה. הבוקר עם קפה במרפסת שווה כל שקל נוסף — לפחות ככה זה מרגיש כרגע.',
         effects: {
           stats: { money: -8, happiness: 6, relationship: 2, housing: 8, career: 1 },
           xp: 20,
@@ -21,6 +22,7 @@ export const financeEvents: GameEvent[] = [
       {
         id: 'stay',
         text: 'להישאר במקום הנוכחי ולחסוך',
+        outcome: 'ויתרת על השדרוג ונשארת במקום הישן והמוכר. פחות מרשים, אבל תזרים המזומנים שלך מודה לך.',
         effects: { stats: { money: 3, housing: -1 }, xp: 10 },
       },
     ],
@@ -38,6 +40,7 @@ export const financeEvents: GameEvent[] = [
       {
         id: 'buy',
         text: 'לקחת משכנתא ולקנות',
+        outcome: 'חתמת על המשכנתא ואת/ה סוף סוף בעל/ת דירה. המפתחות בכיס מרגישים כבדים יותר ממה שציפית — בטוב.',
         effects: {
           stats: { housing: 20, happiness: 8, money: -10 },
           money: -150000,
@@ -48,6 +51,7 @@ export const financeEvents: GameEvent[] = [
       {
         id: 'rent',
         text: 'להמשיך לשכור ולהשקיע את הכסף אחרת',
+        outcome: 'החלטת לא להתחייב עדיין למשכנתא ולהשאיר את האפשרויות פתוחות.',
         effects: { stats: { money: 5 }, xp: 15 },
       },
     ],
@@ -64,11 +68,13 @@ export const financeEvents: GameEvent[] = [
       {
         id: 'fix',
         text: 'לתקן את הרכב',
+        outcome: 'שילמת למוסך סכום לא קטן, אבל הרכב חזר לדרכים ואת/ה חוסך/ת את הכאב ראש של לחפש חלופה.',
         effects: { stats: { money: -5, energy: 3 }, money: -4500, xp: 10 },
       },
       {
         id: 'public_transport',
         text: 'למכור את הרכב ולעבור לתחבורה ציבורית',
+        outcome: 'מכרת את הרכב ועברת לאוטובוסים ורכבות. פחות נוח, אבל החשבון בבנק דווקא שמח.',
         effects: { stats: { money: 3, energy: -5, happiness: -2 }, money: 8000, xp: 15 },
       },
     ],
@@ -86,18 +92,44 @@ export const financeEvents: GameEvent[] = [
       {
         id: 'save',
         text: 'לחסוך את הכל',
+        outcome: 'הפקדת את כל הסכום לחיסכון. לא הכי מרגש, אבל רשת הביטחון שלך משמעותית יותר עבה עכשיו.',
         effects: { stats: { money: 10 }, money: 60000, xp: 15 },
       },
       {
         id: 'invest',
         text: 'להשקיע בשוק ההון',
+        outcome: 'העברת את הכסף לתיק השקעות. עכשיו נשאר רק לעקוב אחרי הגרפים ולנסות לא לבדוק כל יום.',
         effects: { stats: { money: 5 }, money: 40000, xp: 20 },
         hidden: { hiddenStats: { luck: -5 } },
       },
       {
         id: 'spend',
         text: 'לפנק את עצמך ואת האנשים שאת/ה אוהב/ת',
+        outcome: 'יצאת לחופשה, קנית מתנות, פינקת את הקרובים אליך. הכסף נעלם מהר, אבל הזיכרונות נשארים.',
         effects: { stats: { happiness: 12, relationship: 5, friends: 5 }, money: 10000, xp: 20 },
+      },
+    ],
+  },
+  {
+    id: 'side_hustle',
+    category: 'finance',
+    icon: '🛠️',
+    title: 'הזדמנות לפרויקט צדדי',
+    condition: (state) => !state.career.unemployed,
+    weight: 0.6,
+    getText: () => 'מכיר/ה פנה אליך עם הזדמנות לעבודה צדדית בשעות הפנויות שלך, תמורת תשלום נאה.',
+    choices: [
+      {
+        id: 'take',
+        text: 'לקחת את הפרויקט',
+        outcome: 'הלילות התקצרו אבל הכיס התמלא. שווה את זה — הפעם.',
+        effects: { stats: { money: 6, energy: -10, skills: 3 }, money: 6000, xp: 20 },
+      },
+      {
+        id: 'skip',
+        text: 'לוותר ולשמור על הזמן הפנוי',
+        outcome: 'ויתרת על הכסף הנוסף ושמרת על הערבים שלך. לפעמים מנוחה שווה יותר מתלוש נוסף.',
+        effects: { stats: { happiness: 3, energy: 3 }, xp: 10 },
       },
     ],
   },

@@ -101,6 +101,14 @@ export function applyEffect(
 
   const nextFlags = { ...state.flags, ...(effect.flags ?? {}), ...(hidden?.flags ?? {}) }
 
+  const relationshipScoreDelta = (effect.relationshipScore ?? 0) + (hidden?.relationshipScore ?? 0)
+  const nextRelationship = state.relationship.partner
+    ? {
+        ...state.relationship,
+        relationshipScore: Math.max(0, Math.min(100, state.relationship.relationshipScore + relationshipScoreDelta)),
+      }
+    : state.relationship
+
   const scheduledEvents = [...state.scheduledEvents]
   for (const toSchedule of [effect.scheduleEvent, hidden?.scheduleEvent]) {
     if (toSchedule) {
@@ -125,6 +133,7 @@ export function applyEffect(
     stats: statsAfterHidden,
     hiddenStats: hiddenStatsFinal,
     finance: { ...state.finance, savings: nextSavings },
+    relationship: nextRelationship,
     flags: nextFlags,
     scheduledEvents,
     score: {

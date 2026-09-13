@@ -23,9 +23,11 @@ export function ResultPanel({ result }: { result: ScoreLogEntry }) {
   return (
     <div className="rounded-2xl border border-slate-700 bg-slate-900 p-6 space-y-4 shadow-xl">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-slate-200">📊 תוצאת ההחלטה</h2>
+        <h2 className="text-lg font-bold text-slate-200">📖 מה קרה</h2>
         <span className="text-xs text-slate-500">{result.label}</span>
       </div>
+
+      {result.outcome && <p className="text-slate-200 leading-relaxed">{result.outcome}</p>}
 
       {result.visibleEffects.length > 0 ? (
         <div className="flex flex-wrap gap-2">
