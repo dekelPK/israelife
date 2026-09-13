@@ -8,6 +8,10 @@ state (not just a UI number) shape your character's life story.
 every push, see `.github/workflows/deploy-pages.yml`) — installable to a
 phone's home screen as a standalone app (manifest + icons in `public/`).
 
+**Add to home screen:**
+- iOS (Safari): Share button → "Add to Home Screen"
+- Android (Chrome): ⋮ menu → "Install app" / "Add to Home Screen"
+
 ## Stack
 
 React + TypeScript + Vite, Tailwind CSS for styling, Zustand (with the
