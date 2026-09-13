@@ -53,8 +53,9 @@ export const familyEvents: GameEvent[] = [
         text: 'לחגוג ולהתארגן לשלב החדש',
         outcome: 'הבית מלא בבכי, בקבוקים ובוקרים בלי שינה — ובכל זאת, אף פעם לא הרגשת מאושר/ת יותר.',
         effects: { stats: { family: 15, happiness: 10, energy: -15, money: -5 }, xp: 50 },
-        custom: (state, rng) => {
-          const name = randomNpcName(rng)
+        promptInput: { label: 'איך קוראים לתינוק/ת?', placeholder: 'שם...', maxLength: 20 },
+        custom: (state, rng, inputValue) => {
+          const name = inputValue?.trim() || randomNpcName(rng)
           return {
             family: {
               ...state.family,

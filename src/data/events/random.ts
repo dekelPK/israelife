@@ -1,4 +1,5 @@
-import type { GameEvent } from '../../types'
+import { startJob } from '../../engine/career'
+import type { Choice, GameEvent } from '../../types'
 
 export const randomEvents: GameEvent[] = [
   {
@@ -156,30 +157,50 @@ export const randomEvents: GameEvent[] = [
     category: 'random',
     icon: '📱',
     title: 'רגע ויראלי',
-    weight: 0.3,
+    weight: 0.5,
     getText: () => 'משהו שפרסמת ברשתות החברתיות הפך פתאום לויראלי, בלי שום סיבה ברורה.',
-    choices: [
-      {
-        id: 'enjoy',
-        text: 'ליהנות מרגע התהילה',
-        outcome: 'ההודעות לא הפסיקו לזרום כמה ימים.',
-        effects: { stats: { happiness: 6, friends: 4 }, xp: 15 },
-        chance: [
-          { weight: 0.65, outcome: 'מצחיק, מעט מתיש, ובעיקר חוויה שתספר עליה עוד שנים.', effects: { stats: { reputation: 5 } } },
-          {
-            weight: 0.35,
-            outcome: 'לא כולם היו נחמדים. התגובות הזדוניות פגעו יותר משציפית שיעשו.',
-            effects: { stats: { happiness: -8, reputation: -4 } },
-          },
-        ],
-      },
-      {
-        id: 'ignore',
-        text: 'להתעלם ולהמשיך הלאה',
-        outcome: 'כיבית את ההתראות ונתת לרעש לחלוף מעצמו.',
-        effects: { stats: { energy: 2 }, xp: 5 },
-      },
-    ],
+    choices: (state) => {
+      const options: Choice[] = [
+        {
+          id: 'enjoy',
+          text: 'ליהנות מרגע התהילה ולהמשיך הלאה',
+          outcome: 'ההודעות לא הפסיקו לזרום כמה ימים.',
+          effects: { stats: { happiness: 6, friends: 4 }, xp: 15 },
+          chance: [
+            { weight: 0.65, outcome: 'מצחיק, מעט מתיש, ובעיקר חוויה שתספר עליה עוד שנים.', effects: { stats: { reputation: 5 } } },
+            {
+              weight: 0.35,
+              outcome: 'לא כולם היו נחמדים. התגובות הזדוניות פגעו יותר משציפית שיעשו.',
+              effects: { stats: { happiness: -8, reputation: -4 } },
+            },
+          ],
+        },
+        {
+          id: 'ignore',
+          text: 'להתעלם ולהמשיך הלאה',
+          outcome: 'כיבית את ההתראות ונתת לרעש לחלוף מעצמו.',
+          effects: { stats: { energy: 2 }, xp: 5 },
+        },
+      ]
+
+      const alreadyInMedia = state.career.trackId === 'influencer' || state.career.trackId === 'music'
+      if (!alreadyInMedia && state.character.age <= 55) {
+        const wantsMusic = state.character.interests.includes('מוזיקה')
+        options.push({
+          id: 'pivot',
+          text: wantsMusic
+            ? '🎤 לנצל את הרגע ולנסות קריירת מוזיקה'
+            : '📱 לרכוב על הגל ולהתחיל קריירת משפיענות',
+          outcome: wantsMusic
+            ? 'ניצלת את תשומת הלב ופרסמת שיר ראשון. עוד לא ברור אם יש לך את היכולות להמשיך מזה קריירה - אבל ההזדמנות כאן.'
+            : 'החלטת שהרגע הזה שווה סיכון. התחלת ליצור תוכן ברצינות, ורואים אם יש לך את מה שצריך כדי להישאר רלוונטי/ת.',
+          effects: { stats: { happiness: 8, career: 5 }, xp: 30, flags: { hadFirstJob: true } },
+          custom: (s) => ({ career: startJob(s, wantsMusic ? 'music' : 'influencer', 1) }),
+        })
+      }
+
+      return options
+    },
   },
   {
     id: 'weather_extreme',

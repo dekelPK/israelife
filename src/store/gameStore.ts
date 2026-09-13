@@ -16,7 +16,7 @@ interface GameStoreState {
   startCreation: () => void
   continueGame: () => void
   newGame: (character: Character) => void
-  chooseOption: (choiceId: string) => void
+  chooseOption: (choiceId: string, inputValue?: string) => void
   continueToNextYear: () => void
   endGameNow: () => void
   backToStart: () => void
@@ -40,7 +40,7 @@ export const useGameStore = create<GameStoreState>()(
         set({ game, screen: 'playing' })
       },
 
-      chooseOption: (choiceId) => {
+      chooseOption: (choiceId, inputValue) => {
         const { game } = get()
         if (!game || !game.currentEvent) return
         const event = getEventById(game.currentEvent.eventId)
@@ -48,7 +48,7 @@ export const useGameStore = create<GameStoreState>()(
         const choices = resolveChoices(game, event)
         const choice = choices.find((c) => c.id === choiceId)
         if (!choice) return
-        const next = applyChoice(game, event, choice, defaultRng)
+        const next = applyChoice(game, event, choice, defaultRng, inputValue)
         set({ game: next, screen: next.gameOver ? 'summary' : 'playing' })
       },
 

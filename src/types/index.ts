@@ -208,13 +208,18 @@ export interface Choice {
     weight: number
     outcome: string
     effects?: EffectPayload
-    custom?: (state: GameState, rng: () => number) => Partial<GameState>
+    custom?: (state: GameState, rng: () => number, inputValue?: string) => Partial<GameState>
   }[]
+  // When set, choosing this option first asks the player to type something
+  // (a baby's name, etc.) - the UI shows a text field and only enables the
+  // button once it's non-empty. The typed value reaches `custom` as its
+  // third argument; it is not otherwise validated or stored anywhere else.
+  promptInput?: { label: string; placeholder?: string; maxLength?: number }
   // Escape hatch for mutations the generic stat/xp/flag system can't express
   // (starting a job, beginning to date someone, having a child...). Returns a
   // partial GameState that gets merged on top of the state after the generic
   // effects above have already been applied.
-  custom?: (state: GameState, rng: () => number) => Partial<GameState>
+  custom?: (state: GameState, rng: () => number, inputValue?: string) => Partial<GameState>
 }
 
 export interface GameEvent {

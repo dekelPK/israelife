@@ -2,7 +2,13 @@ import type { Choice, GameEvent, GameState, ScoreLogEntry } from '../types'
 import { applyEffect, mergeEffects } from './scoring'
 import { weightedPick, type Rng } from './random'
 
-export function applyChoice(state: GameState, event: GameEvent, choice: Choice, rng: Rng): GameState {
+export function applyChoice(
+  state: GameState,
+  event: GameEvent,
+  choice: Choice,
+  rng: Rng,
+  inputValue?: string,
+): GameState {
   let outcome = choice.outcome
   let effects = choice.effects
   let variantCustom: Choice['custom']
@@ -22,9 +28,9 @@ export function applyChoice(state: GameState, event: GameEvent, choice: Choice, 
   const { state: afterEffects } = applyEffect(state, `${event.title} — ${choice.text}`, effects, choice.hidden)
 
   let next = afterEffects
-  const customPartial = choice.custom?.(next, rng)
+  const customPartial = choice.custom?.(next, rng, inputValue)
   if (customPartial) next = { ...next, ...customPartial }
-  const variantCustomPartial = variantCustom?.(next, rng)
+  const variantCustomPartial = variantCustom?.(next, rng, inputValue)
   if (variantCustomPartial) next = { ...next, ...variantCustomPartial }
 
   if (next.lastResult) {

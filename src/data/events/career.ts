@@ -13,38 +13,28 @@ export const careerEvents: GameEvent[] = [
     condition: (state) => state.career.unemployed && state.education.status !== 'inProgress',
     getText: (state) =>
       state.flags.hadFirstJob
-        ? 'אחרי תקופה ללא עבודה, הגיע הזמן למצוא משהו חדש.'
+        ? 'אחרי תקופה ללא עבודה, הגיע הזמן למצוא משהו חדש. אתה/את לא חייב/ת להישאר באותו תחום - כל מקצוע פתוח בפניך.'
         : state.education.degreeLevel >= 1
-          ? 'סיימת את הלימודים, הגיע הזמן למצוא עבודה ראשונה בתחום.'
-          : 'הגיע הזמן למצוא עבודה ראשונה.',
+          ? 'סיימת את הלימודים, הגיע הזמן למצוא עבודה ראשונה. אפשר ללכת עם התחום שלמדת, או לנסות משהו אחר לגמרי.'
+          : 'הגיע הזמן למצוא עבודה ראשונה. אין מסלול אחד נכון - תבחר/י מה שמדבר אליך.',
     choices: (state) => {
-      const preferredTrack = CAREER_TRACKS.find((t) => t.preferredFields?.includes(state.education.field ?? ''))
-      const options: Choice[] = [
-        {
-          id: 'service',
-          text: '🍽️ עבודה בשירות/מסעדנות',
-          outcome: 'התחלת לעבוד בשירות. זו לא הקריירה שחלמת עליה, אבל זו התחלה, ויש בה גם לא מעט אנשים מעניינים.',
-          effects: { stats: { career: 5, money: 3 }, xp: 20, flags: { hadFirstJob: true } },
-          custom: (s) => ({ career: startJob(s, 'service', 1) }),
-        },
-        {
-          id: 'office',
-          text: '🏢 עבודה במנהלה/ניהול',
-          outcome: 'מצאת עבודה משרדית סבירה. לא מרגשת במיוחד, אבל יציבה ונותנת נקודת פתיחה.',
-          effects: { stats: { career: 6, money: 4 }, xp: 20, flags: { hadFirstJob: true } },
-          custom: (s) => ({ career: startJob(s, 'office', 1) }),
-        },
-      ]
-      if (preferredTrack && preferredTrack.id !== 'service' && preferredTrack.id !== 'office') {
-        options.push({
-          id: preferredTrack.id,
-          text: `${preferredTrack.icon} עבודה בתחום ${preferredTrack.label}`,
-          outcome: `כל הלימודים השתלמו — מצאת משרה ראשונה ממש בתחום ${preferredTrack.label}.`,
-          effects: { stats: { career: 10, money: 6, education: 3 }, xp: 30, flags: { hadFirstJob: true } },
-          custom: (s) => ({ career: startJob(s, preferredTrack.id, 1) }),
-        })
-      }
-      return options
+      const preferredField = state.education.field
+      return CAREER_TRACKS.map((track): Choice => {
+        const isPreferred = !!preferredField && track.preferredFields?.includes(preferredField)
+        return {
+          id: track.id,
+          text: `${track.icon} ${track.label}${isPreferred ? ' (בתחום הלימודים שלך)' : ''}`,
+          outcome: isPreferred
+            ? `כל הלימודים השתלמו — מצאת משרה ראשונה ממש בתחום ${track.label}.`
+            : `התחלת לעבוד בתחום ${track.label}. לא בהכרח מה שתכננת, אבל זו הבחירה שלך.`,
+          effects: {
+            stats: { career: isPreferred ? 10 : 6, money: isPreferred ? 6 : 4, education: isPreferred ? 3 : 0 },
+            xp: isPreferred ? 30 : 20,
+            flags: { hadFirstJob: true },
+          },
+          custom: (s) => ({ career: startJob(s, track.id, 1) }),
+        }
+      })
     },
   },
   {
@@ -262,17 +252,13 @@ export const careerEvents: GameEvent[] = [
     getText: () => 'את/ה מרגיש/ה שהגיע הזמן לנסות משהו אחר לגמרי במקצוע. אף פעם לא מאוחר מדי להתחיל מחדש.',
     choices: (state) => {
       const others = CAREER_TRACKS.filter((t) => t.id !== state.career.trackId)
-      const offset = state.year % others.length
-      const picks = [others[offset], others[(offset + 1) % others.length], others[(offset + 2) % others.length]]
-      const options: Choice[] = picks
-        .filter((t, i, arr) => arr.findIndex((x) => x.id === t.id) === i)
-        .map((track) => ({
-          id: `switch_${track.id}`,
-          text: `${track.icon} לעבור לתחום ${track.label}`,
-          outcome: `עזבת הכל והתחלת מהתחלה בתחום ${track.label}. מפחיד, אבל גם מרענן להיות שוב ג׳וניור.`,
-          effects: { stats: { career: -5, happiness: 5, energy: -8 }, xp: 25 },
-          custom: (s) => ({ career: startJob(s, track.id, 1) }),
-        }))
+      const options: Choice[] = others.map((track) => ({
+        id: `switch_${track.id}`,
+        text: `${track.icon} לעבור לתחום ${track.label}`,
+        outcome: `עזבת הכל והתחלת מהתחלה בתחום ${track.label}. מפחיד, אבל גם מרענן להיות שוב ג׳וניור.`,
+        effects: { stats: { career: -5, happiness: 5, energy: -8 }, xp: 25 },
+        custom: (s) => ({ career: startJob(s, track.id, 1) }),
+      }))
       options.push({
         id: 'stay',
         text: 'להישאר במקום הנוכחי',
