@@ -4,6 +4,10 @@ Web-based Israeli life simulator: create a character, live year by year through
 branching decisions, and watch a scoring system that's part of the actual game
 state (not just a UI number) shape your character's life story.
 
+**Live:** https://dekelpk.github.io/israelife/ (deployed via GitHub Actions on
+every push, see `.github/workflows/deploy-pages.yml`) — installable to a
+phone's home screen as a standalone app (manifest + icons in `public/`).
+
 ## Stack
 
 React + TypeScript + Vite, Tailwind CSS for styling, Zustand (with the
