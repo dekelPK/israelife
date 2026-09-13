@@ -27,8 +27,11 @@ export function Dashboard() {
   const city = findCity(game.character.city)?.label ?? game.character.city
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pb-16">
-      <header className="border-b border-slate-800 bg-slate-900/95 backdrop-blur sticky top-0 z-10 shadow-lg shadow-black/20">
+    <div className="min-h-screen bg-slate-950 text-slate-100" style={{ paddingBottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' }}>
+      <header
+        className="border-b border-slate-800 bg-slate-900/95 backdrop-blur sticky top-0 z-10 shadow-lg shadow-black/20"
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+      >
         <div className="max-w-3xl mx-auto px-4 py-5 space-y-3">
           <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
             <h1 className="font-black text-2xl sm:text-3xl">

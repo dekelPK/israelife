@@ -73,7 +73,13 @@ export function CharacterCreation() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4">
+    <div
+      className="min-h-screen bg-slate-950 text-slate-100 px-4"
+      style={{
+        paddingTop: 'calc(2.5rem + env(safe-area-inset-top, 0px))',
+        paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom, 0px))',
+      }}
+    >
       <div className="max-w-2xl mx-auto space-y-8">
         <h1 className="text-3xl font-black text-center">✨ יצירת דמות</h1>
 

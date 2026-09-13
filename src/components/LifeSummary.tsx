@@ -12,7 +12,13 @@ export function LifeSummary() {
   const city = findCity(game.character.city)?.label ?? game.character.city
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4">
+    <div
+      className="min-h-screen bg-slate-950 text-slate-100 px-4"
+      style={{
+        paddingTop: 'calc(2.5rem + env(safe-area-inset-top, 0px))',
+        paddingBottom: 'calc(2.5rem + env(safe-area-inset-bottom, 0px))',
+      }}
+    >
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="text-center space-y-2">
           <div className="text-5xl">📖</div>

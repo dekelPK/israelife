@@ -6,7 +6,13 @@ export function StartScreen() {
   const continueGame = useGameStore((s) => s.continueGame)
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 text-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 text-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
+      style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+      }}
+    >
       <div className="space-y-3">
         <div className="text-6xl">🇮🇱</div>
         <h1 className="text-4xl font-black tracking-tight bg-gradient-to-l from-sky-400 via-emerald-400 to-amber-300 bg-clip-text text-transparent">
