@@ -9,8 +9,8 @@ export function StartScreen() {
     <div
       className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 text-center bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"
       style={{
-        paddingTop: 'env(safe-area-inset-top, 0px)',
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        paddingTop: 'calc(1.5rem + env(safe-area-inset-top, 0px))',
+        paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))',
       }}
     >
       <div className="space-y-3">
