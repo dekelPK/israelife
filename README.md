@@ -34,7 +34,11 @@ be added under `src/data` without touching engine or UI code.
 ```
 src/
   types/        Core domain types: GameState, Character, StatBlock, Choice,
-                GameEvent, EffectPayload, ScoreState, etc.
+                GameEvent, EffectPayload, ScoreState, etc. Choice also
+                supports `chance` (weighted random follow-on branches, so
+                a decision doesn't always resolve the same way) and
+                `promptInput` (ask the player to type something - e.g. a
+                child's name - before the choice is confirmed).
   engine/        Pure(ish) functions that mutate GameState:
     scoring.ts     applyEffect() — the one place stat/XP/hidden-stat/flag/
                     money deltas land on state and feed the life score.
