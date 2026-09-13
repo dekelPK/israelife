@@ -10,6 +10,30 @@ import { HIDDEN_STAT_KEYS, STAT_KEYS } from '../types'
 
 export const XP_PER_LEVEL = 120
 
+function sumRecords<K extends string>(a?: Partial<Record<K, number>>, b?: Partial<Record<K, number>>) {
+  if (!a && !b) return undefined
+  const out: Partial<Record<K, number>> = { ...a }
+  for (const key in b) {
+    out[key] = (out[key] ?? 0) + (b[key] ?? 0)
+  }
+  return out
+}
+
+// Combines a choice's base effects with a randomly-picked `chance` variant's
+// extra effects into one payload, so they land as a single score-log entry.
+export function mergeEffects(a: EffectPayload, b?: EffectPayload): EffectPayload {
+  if (!b) return a
+  return {
+    stats: sumRecords(a.stats, b.stats),
+    hiddenStats: sumRecords(a.hiddenStats, b.hiddenStats),
+    xp: (a.xp ?? 0) + (b.xp ?? 0),
+    money: (a.money ?? 0) + (b.money ?? 0),
+    relationshipScore: (a.relationshipScore ?? 0) + (b.relationshipScore ?? 0),
+    flags: { ...a.flags, ...b.flags },
+    scheduleEvent: b.scheduleEvent ?? a.scheduleEvent,
+  }
+}
+
 function clampStat(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)))
 }

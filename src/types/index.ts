@@ -196,6 +196,20 @@ export interface Choice {
   // summary or via a later, seemingly unrelated event.
   hidden?: EffectPayload
   requires?: (state: GameState) => boolean
+  // Weighted random follow-on branches evaluated right after the base
+  // `effects` are picked, before anything is applied - so the same choice
+  // can play out differently each time. `outcome` is appended onto the
+  // choice's own outcome sentence ("you did X. <variant outcome>"), and
+  // `effects` (optional) are merged into the base effects before they land.
+  // This is how "not every decision turns out the way you hoped" works:
+  // e.g. keeping a found wallet usually goes unnoticed, but sometimes the
+  // owner recognizes you later.
+  chance?: {
+    weight: number
+    outcome: string
+    effects?: EffectPayload
+    custom?: (state: GameState, rng: () => number) => Partial<GameState>
+  }[]
   // Escape hatch for mutations the generic stat/xp/flag system can't express
   // (starting a job, beginning to date someone, having a child...). Returns a
   // partial GameState that gets merged on top of the state after the generic

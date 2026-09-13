@@ -18,9 +18,20 @@ export const randomEvents: GameEvent[] = [
       {
         id: 'keep',
         text: 'להשאיר את הכסף לעצמך',
-        outcome: 'שמת את הכסף בכיס ולא חשבת פעמיים. משהו קטן בפנים בכל זאת לא הרגיש נכון.',
+        outcome: 'שמת את הכסף בכיס ולא חשבת פעמיים.',
         effects: { stats: { money: 4 }, money: 800, xp: 10 },
         hidden: { hiddenStats: { luck: -8 } },
+        chance: [
+          {
+            weight: 0.6,
+            outcome: 'אף אחד לא ידע, והחיים המשיכו כרגיל.',
+          },
+          {
+            weight: 0.4,
+            outcome: 'כמה שבועות אחר כך נתקלת בבעל הארנק במקרה, וזיהית את הבושה על פניו כשהוא סיפר לך "מישהו גנב לי ארנק באזור הזה". התחושה הלא נעימה נשארה איתך.',
+            effects: { stats: { happiness: -8, reputation: -6 } },
+          },
+        ],
       },
     ],
   },
@@ -64,9 +75,17 @@ export const randomEvents: GameEvent[] = [
       {
         id: 'ignore',
         text: 'להתעלם ולהמשיך בקצב הרגיל',
-        outcome: 'דחית את זה לפעם אחרת. הגוף ימשיך לשלוח תזכורות, בטוב או ברע.',
+        outcome: 'דחית את זה לפעם אחרת.',
         effects: { stats: { energy: -10 }, xp: 5 },
         hidden: { hiddenStats: { stress: 10 } },
+        chance: [
+          { weight: 0.75, outcome: 'בסוף זה לא היה כלום. הגוף פשוט התלונן קצת.' },
+          {
+            weight: 0.25,
+            outcome: 'זה כן היה משהו. חזרת לרופא/ה מאוחר יותר עם תסמינים חמורים יותר משהיו צריכים להיות.',
+            effects: { stats: { energy: -15, happiness: -6 }, money: -2000 },
+          },
+        ],
       },
     ],
   },
@@ -81,8 +100,16 @@ export const randomEvents: GameEvent[] = [
       {
         id: 'meet',
         text: 'לקבוע להיפגש',
-        outcome: 'נפגשתם לקפה שהתארך לשלוש שעות. מסתבר שדברים לא השתנו כל כך.',
+        outcome: 'נפגשתם לקפה.',
         effects: { stats: { friends: 8, happiness: 5 }, xp: 15 },
+        chance: [
+          { weight: 0.7, outcome: 'הפגישה התארכה לשלוש שעות. מסתבר שדברים לא השתנו כל כך.' },
+          {
+            weight: 0.3,
+            outcome: 'מהר מאוד הבנתם ששניכם השתניתם לגמרי. הייתה שם נימוס, אבל לא הרבה מעבר לזה.',
+            effects: { stats: { friends: -5, happiness: -2 } },
+          },
+        ],
       },
       {
         id: 'chat',
@@ -104,9 +131,17 @@ export const randomEvents: GameEvent[] = [
       {
         id: 'lend',
         text: 'להלוות לו/ה כסף',
-        outcome: 'העברת את הכסף בלי היסוס גדול. מקווה שהוא/היא יחזיר/תחזיר, אבל בעיקר שמח/ה שיכולת לעזור.',
+        outcome: 'העברת את הכסף בלי היסוס גדול.',
         effects: { stats: { friends: 10, money: -2 }, money: -2500, xp: 20 },
         hidden: { hiddenStats: { luck: -3 } },
+        chance: [
+          { weight: 0.55, outcome: 'הוא/היא החזיר/ה את הכסף בדיוק כמו שהבטיח/ה, בלי שום דרמה.' },
+          {
+            weight: 0.45,
+            outcome: 'עברו חודשים והכסף לא חזר. בכל פעם שנפגשתם זה ריחף שם באוויר, בלי שאף אחד יגיד מילה.',
+            effects: { stats: { friends: -8, happiness: -4 } },
+          },
+        ],
       },
       {
         id: 'refuse',
@@ -127,8 +162,16 @@ export const randomEvents: GameEvent[] = [
       {
         id: 'enjoy',
         text: 'ליהנות מרגע התהילה',
-        outcome: 'ההודעות לא הפסיקו לזרום כמה ימים. מצחיק, מעט מתיש, ובעיקר חוויה שתספר עליה עוד שנים.',
-        effects: { stats: { happiness: 6, reputation: 5, friends: 4 }, xp: 15 },
+        outcome: 'ההודעות לא הפסיקו לזרום כמה ימים.',
+        effects: { stats: { happiness: 6, friends: 4 }, xp: 15 },
+        chance: [
+          { weight: 0.65, outcome: 'מצחיק, מעט מתיש, ובעיקר חוויה שתספר עליה עוד שנים.', effects: { stats: { reputation: 5 } } },
+          {
+            weight: 0.35,
+            outcome: 'לא כולם היו נחמדים. התגובות הזדוניות פגעו יותר משציפית שיעשו.',
+            effects: { stats: { happiness: -8, reputation: -4 } },
+          },
+        ],
       },
       {
         id: 'ignore',

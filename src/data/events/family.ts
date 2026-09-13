@@ -43,6 +43,7 @@ export const familyEvents: GameEvent[] = [
     category: 'family',
     icon: '🍼',
     title: 'לידה',
+    maxAge: 50,
     condition: (state) => state.family.wantsChildren === true && state.family.children.length < 3,
     weight: 2.5,
     getText: () => 'מזל טוב! נולד/ה לך ילד/ה.',
@@ -77,6 +78,7 @@ export const familyEvents: GameEvent[] = [
     category: 'family',
     icon: '🤰',
     title: 'ילד/ה נוסף/ת?',
+    maxAge: 48,
     condition: (state) => state.family.wantsChildren === true && state.family.children.length >= 1 && state.family.children.length < 3,
     weight: 0.8,
     getText: () => 'המשפחה גדלה יפה. יש מחשבות על עוד ילד/ה?',
@@ -139,6 +141,115 @@ export const familyEvents: GameEvent[] = [
         text: 'להתקשות עם הפרידה',
         outcome: 'הבית פתאום ריק יותר. את/ה בודק/ת את הטלפון כל כמה שעות, גם אם יודע/ת שזה מוגזם.',
         effects: { stats: { family: 5, happiness: -5, energy: -5 }, xp: 20 },
+      },
+    ],
+  },
+  {
+    id: 'child_birthday',
+    category: 'family',
+    icon: '🎂',
+    title: 'יום הולדת לילד/ה',
+    condition: (state) => state.family.children.some((c) => c.stage !== 'adult'),
+    weight: 1,
+    getText: (state) => {
+      const child = state.family.children.find((c) => c.stage !== 'adult')
+      return `${child?.name} חוגג/ת יום הולדת השנה. כל החברים לגן/לכיתה כבר שאלו אם יש מסיבה.`
+    },
+    choices: [
+      {
+        id: 'big_party',
+        text: 'לארגן מסיבה גדולה',
+        outcome: 'הבית התמלא בילדים צורחים, בלונים וקצפת בכל מקום. הילד/ה לא הפסיק/ה לחייך כל היום.',
+        effects: { stats: { family: 8, happiness: 6, energy: -8 }, money: -900, xp: 15 },
+      },
+      {
+        id: 'small_family',
+        text: 'חגיגה קטנה ואינטימית במשפחה',
+        outcome: 'עוגה, שירה קצת מזויפת, וחיבוק ארוך. בדיוק כמו שצריך.',
+        effects: { stats: { family: 6, happiness: 4 }, money: -150, xp: 10 },
+      },
+    ],
+  },
+  {
+    id: 'parenting_disagreement',
+    category: 'family',
+    icon: '👨‍👩‍👧',
+    title: 'חילוקי דעות על גידול הילדים',
+    condition: (state) => state.family.children.length > 0 && !!state.relationship.partner,
+    weight: 0.8,
+    getText: () => 'לך ולבן/בת הזוג יש גישות שונות לגמרי לגבי איך לגדל את הילדים - וזה עולה לוויכוח.',
+    choices: [
+      {
+        id: 'compromise',
+        text: 'לשבת ולמצוא פשרה משותפת',
+        outcome: 'לקח זמן, אבל הגעתם לשיטה שמשלבת קצת משניכם. הילדים לא שמו לב לכלום.',
+        effects: { stats: { family: 6, relationship: 5 }, relationshipScore: 4, xp: 20 },
+      },
+      {
+        id: 'insist',
+        text: 'להתעקש שהדרך שלך היא הנכונה',
+        outcome: 'עמדת על שלך. ניצחת בוויכוח, אבל בבית הייתה אווירה קרירה כמה ימים אחר כך.',
+        effects: { stats: { family: -3, relationship: -6 }, relationshipScore: -6, xp: 10 },
+      },
+    ],
+  },
+  {
+    id: 'teen_rebellion',
+    category: 'family',
+    icon: '🙄',
+    title: 'גיל ההתבגרות מגיע הביתה',
+    condition: (state) =>
+      state.family.children.some((c) => {
+        const age = state.year - c.birthYear
+        return age >= 13 && age <= 17
+      }),
+    weight: 1,
+    getText: (state) => {
+      const teen = state.family.children.find((c) => {
+        const age = state.year - c.birthYear
+        return age >= 13 && age <= 17
+      })
+      return `${teen?.name} נכנס/ת לגיל ההתבגרות בכל התפארת שלו - דלת סגורה, אוזניות, ו"את/ה לא מבין/ה אותי".`
+    },
+    choices: [
+      {
+        id: 'patient',
+        text: 'להישאר סבלני/ת ולתת מרחב',
+        outcome: 'נתת לו/ה את המרחב שביקש/ה, ותוך כמה חודשים הדלת נפתחה שוב מעצמה.',
+        effects: { stats: { family: 6, happiness: 2, energy: -5 }, xp: 20 },
+      },
+      {
+        id: 'strict',
+        text: 'להציב גבולות נוקשים',
+        outcome: 'הצבת חוקים ברורים. זה יצר עוד כמה קרבות בדרך, אבל בסוף האבק שקע.',
+        effects: { stats: { family: 2, happiness: -3, energy: -5 }, xp: 20 },
+        hidden: { hiddenStats: { stress: 8 } },
+      },
+    ],
+  },
+  {
+    id: 'child_achievement',
+    category: 'family',
+    icon: '🏅',
+    title: 'הישג של הילד/ה',
+    condition: (state) => state.family.children.some((c) => c.stage === 'school'),
+    weight: 0.7,
+    getText: (state) => {
+      const child = state.family.children.find((c) => c.stage === 'school')
+      return `${child?.name} זכה/תה במקום ראשון בתחרות בית ספרית - מדעים, ספורט או אמנות, תלוי במי שואלים.`
+    },
+    choices: [
+      {
+        id: 'celebrate',
+        text: 'לחגוג את זה בגדול',
+        outcome: 'תלית את התעודה על המקרר וספרת לכל מי שהסכים להקשיב. הילד/ה פרח/ה מגאווה.',
+        effects: { stats: { family: 8, happiness: 6 }, money: -200, xp: 15 },
+      },
+      {
+        id: 'modest',
+        text: 'לשבח בחום אבל בלי הגזמות',
+        outcome: 'אמרת כמה מילים חמות ועברתם הלאה. הילד/ה הבין/ה שההישג נראה, גם בלי מהומה.',
+        effects: { stats: { family: 4, happiness: 3 }, xp: 10 },
       },
     ],
   },

@@ -98,9 +98,21 @@ export const financeEvents: GameEvent[] = [
       {
         id: 'invest',
         text: 'להשקיע בשוק ההון',
-        outcome: 'העברת את הכסף לתיק השקעות. עכשיו נשאר רק לעקוב אחרי הגרפים ולנסות לא לבדוק כל יום.',
-        effects: { stats: { money: 5 }, money: 40000, xp: 20 },
+        outcome: 'העברת את הכסף לתיק השקעות ועכשיו נשאר רק לעקוב אחרי הגרפים.',
+        effects: { xp: 20 },
         hidden: { hiddenStats: { luck: -5 } },
+        chance: [
+          {
+            weight: 0.55,
+            outcome: 'השוק היה נדיב איתך - התיק צמח יפה מעבר לציפיות.',
+            effects: { stats: { money: 8 }, money: 55000 },
+          },
+          {
+            weight: 0.45,
+            outcome: 'השוק ירד בדיוק כשנכנסת אליו, וחלק לא קטן מהירושה פשוט התאדה.',
+            effects: { stats: { money: -2 }, money: 12000 },
+          },
+        ],
       },
       {
         id: 'spend',

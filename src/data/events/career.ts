@@ -8,6 +8,7 @@ export const careerEvents: GameEvent[] = [
     icon: '💼',
     title: 'לצאת לשוק העבודה',
     minAge: 19,
+    maxAge: 67,
     weight: 4,
     condition: (state) => state.career.unemployed && state.education.status !== 'inProgress',
     getText: (state) =>
@@ -51,6 +52,7 @@ export const careerEvents: GameEvent[] = [
     category: 'career',
     icon: '📨',
     title: 'הצעת עבודה מחברה מתחרה',
+    maxAge: 67,
     condition: (state) => !state.career.unemployed && state.career.yearsInRole >= 1,
     weight: (state) => (state.stats.career > 55 ? 3 : 1),
     getText: () => 'קיבלת הצעת עבודה מחברה מתחרה עם שכר גבוה יותר.',
@@ -77,6 +79,14 @@ export const careerEvents: GameEvent[] = [
         custom: (state) => ({
           career: { ...state.career, salary: Math.round(state.career.salary * 1.2), yearsInRole: 0 },
         }),
+        chance: [
+          { weight: 0.6, outcome: 'המקום החדש הסתדר בדיוק כמו שקיוויתם.' },
+          {
+            weight: 0.4,
+            outcome: 'אחרי כמה חודשים הבנת שהמצגת של המקום הזה בראיון הייתה הרבה יותר יפה מהמציאות.',
+            effects: { stats: { happiness: -6, career: -3 } },
+          },
+        ],
       },
     ],
   },
@@ -146,6 +156,7 @@ export const careerEvents: GameEvent[] = [
     category: 'career',
     icon: '📉',
     title: 'פיטורים בחברה',
+    maxAge: 67,
     condition: (state) => !state.career.unemployed && state.career.trackId !== 'entrepreneur',
     weight: 0.6,
     getText: () => 'החברה שבה את/ה עובד/ת נקלעה לקשיים כלכליים ומבצעת פיטורים.',
@@ -171,6 +182,7 @@ export const careerEvents: GameEvent[] = [
     category: 'career',
     icon: '🗣️',
     title: 'לבקש העלאה?',
+    maxAge: 65,
     condition: (state) => !state.career.unemployed && state.career.yearsInRole >= 2,
     weight: 1.2,
     getText: () => 'עברו שנתיים בתפקיד ואת/ה מרגיש/ה שמגיע לך יותר.',
@@ -195,6 +207,7 @@ export const careerEvents: GameEvent[] = [
     category: 'career',
     icon: '🧑‍🏫',
     title: 'הצעה לחניכה',
+    maxAge: 65,
     condition: (state) => !state.career.unemployed && state.stats.career >= 40,
     weight: 0.8,
     getText: () => 'עובד/ת חדש/ה במקום העבודה ביקש/ה שתהיה/י המנטור/ית שלה. זה זמן, אבל גם הזדמנות.',
@@ -219,6 +232,7 @@ export const careerEvents: GameEvent[] = [
     icon: '🏡',
     title: 'אפשרות לעבודה היברידית',
     once: true,
+    maxAge: 65,
     condition: (state) => !state.career.unemployed && state.career.trackId !== 'service',
     weight: 0.7,
     getText: () => 'החברה מאפשרת לעובדים לעבור למודל עבודה היברידי — חלק מהבית, חלק מהמשרד.',
@@ -242,6 +256,7 @@ export const careerEvents: GameEvent[] = [
     category: 'career',
     icon: '🔄',
     title: 'לשנות כיוון מקצועי?',
+    maxAge: 60,
     condition: (state) => !state.career.unemployed && state.career.yearsInRole >= 3,
     weight: 0.5,
     getText: () => 'את/ה מרגיש/ה שהגיע הזמן לנסות משהו אחר לגמרי במקצוע. אף פעם לא מאוחר מדי להתחיל מחדש.',
@@ -266,6 +281,119 @@ export const careerEvents: GameEvent[] = [
       })
       return options
     },
+  },
+  {
+    id: 'tech_layoff_wave',
+    category: 'career',
+    icon: '📉',
+    title: 'גל פיטורים בהייטק',
+    condition: (state) => state.career.trackId === 'tech',
+    weight: 0.6,
+    maxAge: 67,
+    getText: () => 'גל פיטורים גדול עובר על כל תעשיית ההייטק, וגם החברה שלך מכריזה על צמצומים.',
+    choices: [
+      {
+        id: 'hope',
+        text: 'לקוות שהסבב הזה יעבור אותך',
+        outcome: 'ישבת בחרדה שקטה בזמן שהודעות פיטורים יצאו למחלקות שונות.',
+        effects: { stats: { happiness: -6, energy: -5 }, xp: 15 },
+        chance: [
+          { weight: 0.6, outcome: 'שמך לא היה ברשימה. הקלה גדולה, גם אם מהולה באשמת הניצולים.' },
+          {
+            weight: 0.4,
+            outcome: 'הפעם זה היה שמך. פיטורים בזום, חמש דקות, ותודה על התרומה.',
+            effects: { stats: { career: -10, money: -3 } },
+            custom: () => ({
+              career: { unemployed: true, trackId: null, jobId: null, title: 'ללא תעסוקה', level: 0, salary: 0, yearsInRole: 0 },
+            }),
+          },
+        ],
+      },
+      {
+        id: 'network',
+        text: 'להתחיל כבר עכשיו לחפש ברשת אבטחה',
+        outcome: 'עדכנת קורות חיים ופנית לכמה מכרים בתעשייה, ליתר ביטחון.',
+        effects: { stats: { career: 2, energy: -5 }, xp: 20 },
+      },
+    ],
+  },
+  {
+    id: 'medical_emergency_shift',
+    category: 'career',
+    icon: '🚑',
+    title: 'משמרת חירום קשה',
+    condition: (state) => state.career.trackId === 'medicine',
+    weight: 0.8,
+    getText: () => 'משמרת לילה בחדר מיון הופכת למרוץ נגד הזמן. חייל את החלטות שיכולות להציל או לא להציל חיים.',
+    choices: [
+      {
+        id: 'push_through',
+        text: 'לתת את כל מה שיש, גם על חשבון עצמך',
+        outcome: 'יצאת מהמשמרת אחרי 16 שעות, רועד/ת מעייפות אבל בטוח/ה שעשית כל מה שיכולת.',
+        effects: { stats: { career: 6, reputation: 5, energy: -20, happiness: -3 }, xp: 30 },
+        hidden: { hiddenStats: { stress: 15 } },
+      },
+      {
+        id: 'delegate',
+        text: 'להעביר חלק מהמקרים לצוות ולשמור על עצמך',
+        outcome: 'חילקת את העומס בין הצוות. פחות גיבורי/ת-על, יותר בר-קיימא לטווח הארוך.',
+        effects: { stats: { career: 2, energy: -8 }, xp: 20 },
+      },
+    ],
+  },
+  {
+    id: 'difficult_customer',
+    category: 'career',
+    icon: '😤',
+    title: 'לקוח קשה במיוחד',
+    condition: (state) => state.career.trackId === 'service',
+    weight: 0.8,
+    getText: () => 'לקוח מתלונן בקול רם על כל דבר אפשרי, והתור מאחוריו מתחיל להתעצבן.',
+    choices: [
+      {
+        id: 'stay_calm',
+        text: 'להישאר רגוע/ה ומקצועי/ת',
+        outcome: 'שמרת על חיוך מנומס עד שהוא הלך, בעוד שבפנים רצית לצרוח.',
+        effects: { stats: { energy: -8, career: 3 }, xp: 15 },
+      },
+      {
+        id: 'stand_up',
+        text: 'לעמוד על שלך ולא לוותר',
+        outcome: 'אמרת בנימוס אבל בתקיפות שזה מספיק.',
+        effects: { stats: { happiness: 3 }, xp: 15 },
+        chance: [
+          { weight: 0.6, outcome: 'הלקוח נרגע והתנצל בסוף. אפילו השאיר טיפ.', effects: { stats: { money: 2 } } },
+          {
+            weight: 0.4,
+            outcome: 'הלקוח התלונן למנהל/ת עליך, וקיבלת נזיפה למרות שהיית בסדר גמור.',
+            effects: { stats: { career: -5, happiness: -5 } },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'office_reorg',
+    category: 'career',
+    icon: '🗂️',
+    title: 'ריאורגון בחברה',
+    condition: (state) => state.career.trackId === 'office',
+    weight: 0.6,
+    getText: () => 'הנהלת החברה מכריזה על מבנה ארגוני חדש. תפקידים מתחלפים, מנהלים מתחלפים, ואף אחד לא ממש יודע מה קורה.',
+    choices: [
+      {
+        id: 'embrace',
+        text: 'לאמץ את השינוי ולהתנדב לתפקיד חדש',
+        outcome: 'קפצת קדימה כשכולם היססו. זה סיכון, אבל גם הזדמנות בולטת.',
+        effects: { stats: { career: 8, energy: -8 }, xp: 25 },
+      },
+      {
+        id: 'wait_and_see',
+        text: 'לחכות ולראות איך הדברים מתיישבים',
+        outcome: 'שמרת על ראש נמוך עד שהאבק שקע. גישה בטוחה, אם לא הכי נועזת.',
+        effects: { stats: { happiness: 1 }, xp: 10 },
+      },
+    ],
   },
 ]
 
