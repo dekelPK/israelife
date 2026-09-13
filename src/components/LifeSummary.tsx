@@ -1,6 +1,6 @@
 import { useGameStore } from '../store/gameStore'
 import { generateLifeSummary } from '../engine/lifeSummary'
-import { CITIES } from '../data/cities'
+import { findCity } from '../data/cities'
 
 export function LifeSummary() {
   const game = useGameStore((s) => s.game)
@@ -9,7 +9,7 @@ export function LifeSummary() {
   if (!game) return null
 
   const summary = generateLifeSummary(game)
-  const city = CITIES.find((c) => c.id === game.character.city)?.label ?? game.character.city
+  const city = findCity(game.character.city)?.label ?? game.character.city
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-10 px-4">

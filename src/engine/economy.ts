@@ -1,8 +1,8 @@
-import { CITIES } from '../data/cities'
+import { findCity } from '../data/cities'
 import type { GameState } from '../types'
 
-function cityMultiplier(cityId: string): number {
-  return CITIES.find((c) => c.id === cityId)?.costOfLiving ?? 1
+function cityMultiplier(cityValue: string): number {
+  return findCity(cityValue)?.costOfLiving ?? 1
 }
 
 export interface YearlyFinanceResult {

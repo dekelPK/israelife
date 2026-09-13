@@ -29,8 +29,10 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'studies',
         text: '🎓 ללכת ללמוד',
-        outcome: 'החלטת להשקיע קודם בהשכלה. עוד מעט תצטרך לבחור מסלול ותחום.',
+        outcome:
+          'החלטת להשקיע קודם בהשכלה במקום להתגייס. יש כאלה שמבינים לגמרי, ויש כאלה - כולל קרובי משפחה - שלא מפסיקים לשאול "ולמה בעצם לא?"',
         effects: {
+          stats: { reputation: -18 },
           xp: 15,
           flags: { choseStudiesFirst: true },
           scheduleEvent: { eventId: 'choose_study_path', inYears: 0 },
@@ -39,9 +41,10 @@ export const onboardingEvents: GameEvent[] = [
       {
         id: 'work',
         text: '💼 לצאת ישר לעבודה',
-        outcome: 'ויתרת על עוד כמה שנים בספסל הלימודים ויצאת ישר לשוק העבודה. פחות תארים, יותר ניסיון.',
+        outcome:
+          'ויתרת על עוד כמה שנים בספסל הלימודים - ועל הצבא - ויצאת ישר לשוק העבודה. פחות תארים ופחות "איפה שירתת", יותר ניסיון מעשי.',
         effects: {
-          stats: { career: 5, money: 5 },
+          stats: { career: 5, money: 5, reputation: -18 },
           xp: 15,
           flags: { startedWorkingEarly: true },
         },

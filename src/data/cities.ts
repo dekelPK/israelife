@@ -6,6 +6,13 @@ export interface CityDef {
   vibe: string
 }
 
+// character.city is free text (the city input allows typing any city, not
+// just picking from the list), so lookups match by label first - id stays
+// only for backward compatibility with saves from before free-text entry.
+export function findCity(cityValue: string): CityDef | undefined {
+  return CITIES.find((c) => c.label === cityValue || c.id === cityValue)
+}
+
 export const CITIES: CityDef[] = [
   { id: 'telaviv', label: 'תל אביב', costOfLiving: 1.5, jobMarket: 1.3, vibe: 'קצב חיים מהיר, הייטק ובועה' },
   { id: 'jerusalem', label: 'ירושלים', costOfLiving: 1.1, jobMarket: 1.0, vibe: 'עירוב עולמות, קהילות מגוונות' },

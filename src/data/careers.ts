@@ -77,6 +77,42 @@ export const CAREER_TRACKS: CareerTrackDef[] = [
       { level: 4, title: 'מנכ"ל/ית לאחר אקזיט', baseSalary: 50000 },
     ],
   },
+  {
+    id: 'music',
+    label: 'מוזיקה',
+    icon: '🎤',
+    preferredFields: ['design'],
+    levels: [
+      { level: 1, title: 'זמר/ת בפאבים', baseSalary: 2500 },
+      { level: 2, title: 'אמן/ית עם פאנבייס', baseSalary: 6000 },
+      { level: 3, title: 'כוכב/ת רדיו', baseSalary: 15000 },
+      { level: 4, title: 'כוכב/ת ארצי/ת', baseSalary: 35000 },
+      { level: 5, title: 'אייקון ישראלי', baseSalary: 80000 },
+    ],
+  },
+  {
+    id: 'theater',
+    label: 'תיאטרון ומשחק',
+    icon: '🎭',
+    preferredFields: ['design'],
+    levels: [
+      { level: 1, title: 'שחקן/ית מתחיל/ה', baseSalary: 3500 },
+      { level: 2, title: 'שחקן/ית תיאטרון', baseSalary: 7500 },
+      { level: 3, title: 'שחקן/ית קולנוע וטלוויזיה', baseSalary: 16000 },
+      { level: 4, title: 'כוכב/ת ישראלי/ת', baseSalary: 40000 },
+    ],
+  },
+  {
+    id: 'influencer',
+    label: 'רשתות חברתיות',
+    icon: '📱',
+    levels: [
+      { level: 1, title: 'יוצר/ת תוכן מתחיל/ה', baseSalary: 1500 },
+      { level: 2, title: 'משפיען/ית', baseSalary: 5000 },
+      { level: 3, title: 'משפיען/ית מוביל/ה', baseSalary: 18000 },
+      { level: 4, title: 'סלב דיגיטלי', baseSalary: 45000 },
+    ],
+  },
 ]
 
 export function getTrack(trackId: string | null): CareerTrackDef | undefined {

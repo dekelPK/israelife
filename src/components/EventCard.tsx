@@ -11,6 +11,7 @@ const CATEGORY_STYLE: Record<string, string> = {
   random: 'from-violet-500/20 to-violet-500/5 border-violet-500/40',
   finance: 'from-emerald-500/20 to-emerald-500/5 border-emerald-500/40',
   education: 'from-teal-500/20 to-teal-500/5 border-teal-500/40',
+  leisure: 'from-fuchsia-500/20 to-fuchsia-500/5 border-fuchsia-500/40',
 }
 
 export function EventCard({ game }: { game: GameState }) {

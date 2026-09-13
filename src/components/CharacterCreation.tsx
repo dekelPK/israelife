@@ -30,7 +30,7 @@ export function CharacterCreation() {
   const [age, setAge] = useState(18)
   const [gender, setGender] = useState<Gender>('male')
   const [pref, setPref] = useState<RomanticPreference>('everyone')
-  const [city, setCity] = useState(CITIES[0].id)
+  const [city, setCity] = useState(CITIES[0].label)
   const [wealth, setWealth] = useState<FamilyWealth>('middle')
   const [traits, setTraits] = useState<TraitId[]>([])
   const [interests, setInterests] = useState<string[]>([])
@@ -47,7 +47,7 @@ export function CharacterCreation() {
     setInterests((prev) => (prev.includes(label) ? prev.filter((i) => i !== label) : [...prev, label]))
   }
 
-  const canSubmit = name.trim().length > 0 && traits.length > 0
+  const canSubmit = name.trim().length > 0 && traits.length > 0 && city.trim().length > 0
 
   const handleSubmit = () => {
     if (!canSubmit) return
@@ -56,7 +56,7 @@ export function CharacterCreation() {
       age,
       gender,
       romanticPreference: pref,
-      city,
+      city: city.trim(),
       familyWealth: wealth,
       traits,
       interests,
@@ -122,22 +122,25 @@ export function CharacterCreation() {
         </section>
 
         <section className="space-y-2">
-          <label className="text-sm text-slate-400" htmlFor="city-select">
+          <label className="text-sm text-slate-400" htmlFor="city-input">
             עיר מגורים
           </label>
-          <select
-            id="city-select"
+          <input
+            id="city-input"
+            list="city-options"
             value={city}
             onChange={(e) => setCity(e.target.value)}
+            placeholder="הקלד/י עיר, או בחר/י מהרשימה"
             className="w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2.5 outline-none focus:border-sky-500 text-slate-100"
-          >
+          />
+          <datalist id="city-options">
             {CITIES.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.label}
-              </option>
+              <option key={c.id} value={c.label} />
             ))}
-          </select>
-          <p className="text-xs text-slate-500">{CITIES.find((c) => c.id === city)?.vibe}</p>
+          </datalist>
+          {CITIES.find((c) => c.label === city) && (
+            <p className="text-xs text-slate-500">{CITIES.find((c) => c.label === city)?.vibe}</p>
+          )}
         </section>
 
         <section className="space-y-2">

@@ -205,7 +205,7 @@ export interface Choice {
 
 export interface GameEvent {
   id: string
-  category: 'career' | 'romance' | 'family' | 'israel' | 'random' | 'finance' | 'education'
+  category: 'career' | 'romance' | 'family' | 'israel' | 'random' | 'finance' | 'education' | 'leisure'
   title: string
   icon: string
   getText: (state: GameState) => string

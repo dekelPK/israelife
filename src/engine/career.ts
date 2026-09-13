@@ -1,10 +1,10 @@
-import { CITIES } from '../data/cities'
+import { findCity } from '../data/cities'
 import { CAREER_TRACKS, getTrack } from '../data/careers'
 import type { CareerState, GameState } from '../types'
 import { chance, type Rng } from './random'
 
-function jobMarketMultiplier(cityId: string): number {
-  return CITIES.find((c) => c.id === cityId)?.jobMarket ?? 1
+function jobMarketMultiplier(cityValue: string): number {
+  return findCity(cityValue)?.jobMarket ?? 1
 }
 
 export function salaryFor(trackId: string, level: number, cityId: string): number {

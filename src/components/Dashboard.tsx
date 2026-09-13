@@ -3,7 +3,7 @@ import { useGameStore } from '../store/gameStore'
 import { StatsBar } from './StatsBar'
 import { EventCard } from './EventCard'
 import { ResultPanel } from './ResultPanel'
-import { CITIES } from '../data/cities'
+import { findCity } from '../data/cities'
 import { LIFE_STAGE_LABELS } from '../engine/time'
 
 const RELATIONSHIP_LABEL: Record<string, string> = {
@@ -24,7 +24,7 @@ export function Dashboard() {
 
   if (!game) return null
 
-  const city = CITIES.find((c) => c.id === game.character.city)?.label ?? game.character.city
+  const city = findCity(game.character.city)?.label ?? game.character.city
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 pb-16">
