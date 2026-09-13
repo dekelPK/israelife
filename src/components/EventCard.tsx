@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useGameStore } from '../store/gameStore'
 import { getEventById } from '../data/events'
 import { resolveChoices } from '../engine/events'
+import { genderizeText, PARTNER_CONTEXT_EVENT_IDS } from '../engine/genderize'
 import type { GameState } from '../types'
 
 const CATEGORY_STYLE: Record<string, string> = {
@@ -24,6 +25,8 @@ export function EventCard({ game }: { game: GameState }) {
   if (!event) return null
   const choices = resolveChoices(game, event)
   const style = CATEGORY_STYLE[event.category] ?? CATEGORY_STYLE.random
+  const partnerGender = PARTNER_CONTEXT_EVENT_IDS.has(event.id) ? game.relationship.partner?.gender : undefined
+  const text = genderizeText(event.getText(game), game.character.gender, partnerGender)
 
   return (
     <div className={`rounded-2xl border bg-gradient-to-b ${style} p-6 space-y-4 shadow-xl`}>
@@ -31,7 +34,7 @@ export function EventCard({ game }: { game: GameState }) {
         <span className="text-3xl">{event.icon}</span>
         <h2 className="text-xl font-bold">{event.title}</h2>
       </div>
-      <p className="text-slate-200 leading-relaxed">{event.getText(game)}</p>
+      <p className="text-slate-200 leading-relaxed">{text}</p>
       <div className="flex flex-col gap-2 pt-2">
         {choices.map((choice) => {
           if (!choice.promptInput) {

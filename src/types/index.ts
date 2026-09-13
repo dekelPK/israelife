@@ -110,6 +110,7 @@ export interface CareerState {
 export interface PartnerNPC {
   id: string
   name: string
+  gender: 'male' | 'female'
   personalityTraits: TraitId[]
   occupation: string
   financialStatus: FamilyWealth

@@ -1,10 +1,19 @@
-import { randomNpcName } from '../data/names'
+import { randomNameByGender } from '../data/names'
 import { CAREER_TRACKS } from '../data/careers'
 import { TRAITS } from '../data/traits'
 import type { FamilyWealth, GameState, PartnerNPC, TraitId } from '../types'
-import { pick, randomInt, type Rng } from './random'
+import { chance, pick, randomInt, type Rng } from './random'
 
 let npcCounter = 0
+
+// Who you actually meet follows your stated preference - "everyone" still
+// meets one real person at a time, so we still have to pick a gender for
+// this particular NPC, just without biasing which one.
+function pickPartnerGender(state: GameState, rng: Rng): 'male' | 'female' {
+  if (state.character.romanticPreference === 'men') return 'male'
+  if (state.character.romanticPreference === 'women') return 'female'
+  return chance(0.5, rng) ? 'male' : 'female'
+}
 
 export function generatePartner(state: GameState, rng: Rng): PartnerNPC {
   npcCounter += 1
@@ -14,6 +23,7 @@ export function generatePartner(state: GameState, rng: Rng): PartnerNPC {
   )
   const track = pick(CAREER_TRACKS, rng)
   const wealthOptions: FamilyWealth[] = ['poor', 'middle', 'wealthy']
+  const gender = pickPartnerGender(state, rng)
 
   let compatibility = randomInt(30, 90, rng)
   const sharedTraits = traits.filter((t) => state.character.traits.includes(t))
@@ -22,7 +32,8 @@ export function generatePartner(state: GameState, rng: Rng): PartnerNPC {
 
   return {
     id: `npc-${Date.now()}-${npcCounter}`,
-    name: randomNpcName(rng),
+    name: randomNameByGender(gender, rng),
+    gender,
     personalityTraits: traits,
     occupation: pick(track.levels, rng).title,
     financialStatus: pick(wealthOptions, rng),

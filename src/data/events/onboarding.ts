@@ -102,18 +102,26 @@ export const onboardingEvents: GameEvent[] = [
       state.flags.servedArmy
         ? 'אחרי הצבא, את/ה מרגיש/ה שזה הזמן ללמוד משהו. איפה תרצה/י ללמוד?'
         : 'עולה בך הרצון ללמוד משהו חדש ברצינות. איפה תרצה/י ללמוד?',
-    choices: EDUCATION_PATHS.filter((p) => p.id !== 'none').map(
-      (path): Choice => ({
-        id: path.id,
-        text: `${path.label} — ${path.description}`,
-        outcome: `נרשמת ל${path.label}. עכשיו צריך לבחור תחום.`,
-        effects: {
-          money: -path.yearlyCost,
-          flags: { studyPath: path.id },
-          scheduleEvent: { eventId: 'choose_field', inYears: 0 },
-        },
-      }),
-    ),
+    choices: [
+      ...EDUCATION_PATHS.filter((p) => p.id !== 'none').map(
+        (path): Choice => ({
+          id: path.id,
+          text: `${path.label} — ${path.description}`,
+          outcome: `נרשמת ל${path.label}. עכשיו צריך לבחור תחום.`,
+          effects: {
+            money: -path.yearlyCost,
+            flags: { studyPath: path.id },
+            scheduleEvent: { eventId: 'choose_field', inYears: 0 },
+          },
+        }),
+      ),
+      {
+        id: 'none',
+        text: 'בעצם לא — לא ללמוד כרגע',
+        outcome: 'חשבת על זה שוב והחלטת שלימודים זה לא בשבילך כרגע. אפשר תמיד לחזור לרעיון הזה מאוחר יותר.',
+        effects: { stats: { happiness: 2 }, xp: 10 },
+      },
+    ],
   },
   {
     id: 'choose_field',

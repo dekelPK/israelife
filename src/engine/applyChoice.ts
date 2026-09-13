@@ -1,6 +1,7 @@
 import type { Choice, GameEvent, GameState, ScoreLogEntry } from '../types'
 import { applyEffect, mergeEffects } from './scoring'
 import { weightedPick, type Rng } from './random'
+import { genderizeText, PARTNER_CONTEXT_EVENT_IDS } from './genderize'
 
 export function applyChoice(
   state: GameState,
@@ -34,7 +35,11 @@ export function applyChoice(
   if (variantCustomPartial) next = { ...next, ...variantCustomPartial }
 
   if (next.lastResult) {
-    const withOutcome: ScoreLogEntry = { ...next.lastResult, outcome }
+    const partnerGender = PARTNER_CONTEXT_EVENT_IDS.has(event.id) ? next.relationship.partner?.gender : undefined
+    const withOutcome: ScoreLogEntry = {
+      ...next.lastResult,
+      outcome: genderizeText(outcome, next.character.gender, partnerGender),
+    }
     next = {
       ...next,
       lastResult: withOutcome,

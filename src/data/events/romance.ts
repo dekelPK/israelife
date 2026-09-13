@@ -122,7 +122,16 @@ export const romanceEvents: GameEvent[] = [
           xp: 60,
           flags: { married: true },
         },
-        custom: (state) => ({ relationship: { ...state.relationship, status: 'married' } }),
+        custom: (state) => ({
+          relationship: { ...state.relationship, status: 'married' },
+          // Only queue the children conversation if it hasn't already been
+          // had (e.g. while dating, before the proposal) - scheduled events
+          // bypass the once-only guard on children_decision itself.
+          scheduledEvents:
+            state.family.wantsChildren === null
+              ? [...state.scheduledEvents, { eventId: 'children_decision', triggerYear: state.year }]
+              : state.scheduledEvents,
+        }),
       },
       {
         id: 'wait',
