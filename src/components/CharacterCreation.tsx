@@ -31,6 +31,7 @@ export function CharacterCreation() {
   const [gender, setGender] = useState<Gender>('male')
   const [pref, setPref] = useState<RomanticPreference>('everyone')
   const [city, setCity] = useState(CITIES[0].label)
+  const [cityMenuOpen, setCityMenuOpen] = useState(false)
   const [wealth, setWealth] = useState<FamilyWealth>('middle')
   const [traits, setTraits] = useState<TraitId[]>([])
   const [interests, setInterests] = useState<string[]>([])
@@ -48,6 +49,13 @@ export function CharacterCreation() {
   }
 
   const canSubmit = name.trim().length > 0 && traits.length > 0 && city.trim().length > 0
+
+  // Once the field holds a recognized city name (the default, or a prior
+  // pick) focusing it should browse the whole list, not just itself -
+  // filtering to a substring match only kicks in once the text no longer
+  // matches a known city (i.e. the player is actively typing something new).
+  const cityIsKnown = CITIES.some((c) => c.label === city)
+  const citySuggestions = CITIES.filter((c) => !city.trim() || cityIsKnown || c.label.includes(city.trim()))
 
   const handleSubmit = () => {
     if (!canSubmit) return
@@ -121,23 +129,46 @@ export function CharacterCreation() {
           </div>
         </section>
 
-        <section className="space-y-2">
+        <section className="space-y-2 relative">
           <label className="text-sm text-slate-400" htmlFor="city-input">
             עיר מגורים
           </label>
           <input
             id="city-input"
-            list="city-options"
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              setCity(e.target.value)
+              setCityMenuOpen(true)
+            }}
+            onFocus={(e) => {
+              setCityMenuOpen(true)
+              e.target.select()
+            }}
+            onBlur={() => window.setTimeout(() => setCityMenuOpen(false), 150)}
+            autoComplete="off"
             placeholder="הקלד/י עיר, או בחר/י מהרשימה"
             className="w-full rounded-lg bg-slate-900 border border-slate-700 px-4 py-2.5 outline-none focus:border-sky-500 text-slate-100"
           />
-          <datalist id="city-options">
-            {CITIES.map((c) => (
-              <option key={c.id} value={c.label} />
-            ))}
-          </datalist>
+          {cityMenuOpen && (
+            <div className="absolute z-20 mt-1 w-full max-h-56 overflow-y-auto rounded-lg bg-slate-900 border border-slate-700 shadow-xl">
+              {citySuggestions.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => {
+                    setCity(c.label)
+                    setCityMenuOpen(false)
+                  }}
+                  className="w-full text-right px-4 py-2 text-sm hover:bg-slate-800 border-b border-slate-800 last:border-0"
+                >
+                  {c.label}
+                </button>
+              ))}
+              {citySuggestions.length === 0 && (
+                <div className="px-4 py-2 text-sm text-slate-500">אין הצעות — נשתמש בטקסט שהקלדת</div>
+              )}
+            </div>
+          )}
           {CITIES.find((c) => c.label === city) && (
             <p className="text-xs text-slate-500">{CITIES.find((c) => c.label === city)?.vibe}</p>
           )}
